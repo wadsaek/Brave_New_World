@@ -1,11 +1,11 @@
 {
-  "name": "brave-new-world",
+  "name": "Braver_New_World",
   "version": "3.3.0",
   "factorio_version": "0.18",
-  "title": "Brave New World",
+  "title": "Braver New World",
   "author": "canidae",
-  "contact": "canidae@exent.net",
+  "contact": "eric-factorio@omnifarious.org",
   "homepage": "http://exent.net",
-  "description": "RTS-like scenario for Factorio. Player character is removed, all work must be done by bots",
+  "description": "RTS-like scenario for Factorio. Player character is removed, all work must be done by bots. Minimal 0.18 port of Brave New World by candidae, ported by Sladki, published by Omnifarious.",
   "dependencies": ["base >= 0.18.0"]
 }
