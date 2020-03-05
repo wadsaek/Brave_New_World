@@ -272,8 +272,17 @@ function setupForce(force, surface, x, y, seablock_enabled)
     config.roboport.minable = false
     config.roboport.energy = 100000000
     local roboport_inventory = config.roboport.get_inventory(defines.inventory.roboport_robot)
-    roboport_inventory.insert{name = "starter-construction-robot", count = 100}
-    roboport_inventory.insert{name = "starter-logistic-robot", count = 50}
+    if game.entity_prototypes["starter-construction-robot"] ~= nil then
+       roboport_inventory.insert{name = "starter-construction-robot", count = 100}
+    else
+       roboport_inventory.insert{name = "construction-robot", count = 100}
+    end
+    if game.entity_prototypes["starter-logistic-robot"] ~= nil then
+       roboport_inventory.insert{name = "starter-logistic-robot", count = 50}
+    else
+       roboport_inventory.insert{name = "logistic-robot", count = 50}
+    end
+
     roboport_inventory = config.roboport.get_inventory(defines.inventory.roboport_material)
     roboport_inventory.insert{name = "repair-pack", count = 10}
     -- electric pole
@@ -449,7 +458,7 @@ script.on_event(defines.events.on_player_cursor_stack_changed, function(event)
         for _, alert_type in pairs(surface) do
             for _, alert in pairs(alert_type) do
                 local entity = alert.target
-                if entity.name == "starter-construction-robot" then
+                if (entity.name == "starter-construction-robot") or (entity.name == "construction-robot") then
                     out_of_storage = true
                     local inventory = entity.get_inventory(defines.inventory.robot_cargo)
                     if inventory then
