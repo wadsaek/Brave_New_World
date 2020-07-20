@@ -2,7 +2,10 @@
 Version: 3.3.1
 Date: 29. 01. 2020
   Changes:
-    - Make starting robots extra fast
+    - Add integration with Ingos Advanced Start to use extra-fast starting robots from that mod. Note that Ingos needs updating too.
+    - Slight improvements to some text.
+    - Improvements to Russian translation courtesty TheLastEagle
+    - Improvements to item spilling that should be more performant, never miss marking spilled items with the deconstruction planner, and never spill items onto belts.
 ---------------------------------------------------------------------------------------------------
 Version: 3.3.0
 Date: 29. 01. 2020
