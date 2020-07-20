@@ -152,6 +152,9 @@ function itemCountAllowed(name, count, player)
     elseif string.match(name, ".*module.*") then
         -- allow modules
         return count
+    elseif name == "BlueprintAlignment-blueprint-holder" then
+        -- temporary holding location for original blueprint, should only ever be one of these.
+        return count
     end
     return 0
 end
