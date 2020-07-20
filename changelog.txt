@@ -1,11 +1,18 @@
 ---------------------------------------------------------------------------------------------------
+Version: 3.3.2
+Date: 20. 07. 2020
+  Bugfixes:
+    - Make changelog.txt work in in-game parser.
+---------------------------------------------------------------------------------------------------
 Version: 3.3.1
-Date: 29. 01. 2020
-  Changes:
+Date: 20. 07. 2020
+  Features:
     - Add integration with Ingos Advanced Start to use extra-fast starting robots from that mod. Note that Ingos needs updating too.
+  Optimisations:
+    - Improvements to item spilling that should be more performant, never miss marking spilled items with the deconstruction planner, and never spill items onto belts.
+  Locale:
     - Slight improvements to some text.
     - Improvements to Russian translation courtesty TheLastEagle
-    - Improvements to item spilling that should be more performant, never miss marking spilled items with the deconstruction planner, and never spill items onto belts.
 ---------------------------------------------------------------------------------------------------
 Version: 3.3.0
 Date: 29. 01. 2020
@@ -22,7 +29,7 @@ Version: 3.2.0
 Date: 15. 03. 2019
   Changes:
     - NOTE: Poles/underneathies/underpipes can no longer be drag-placed. It was a hack that I've now removed in the hope of the devs adding this functionality to the ghost cursor.
-	- Fixed issue with disappearing items in some cases
+      - Fixed issue with disappearing items in some cases
 ---------------------------------------------------------------------------------------------------
 Version: 3.1.0
 Date: 11. 03. 2019
@@ -42,7 +49,7 @@ Date: 03. 03. 2019
     - Added gun turrets as the locals are more aggressive in 0.17 (github.com/asdfuser)
     - German localization (github.com/asdfuser)
     - Tweaked starting equipment (Assembler 1 instead of Assembler 3, slightly more chests/inserters/splitters/underground belts) (canidae)
-  Bugs:
+  Bugfixes:
     - I was able to duplicate power poles. Not sure if that is new (github.com/asdfuser)
     - Integration with the ghost cursor is missing, so the blueprints will still clutter your inventory (github.com/asdfuser)
 ---------------------------------------------------------------------------------------------------
