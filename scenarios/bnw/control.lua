@@ -269,12 +269,12 @@ function setupForce(force, surface, x, y, seablock_enabled)
     config.roboport.minable = false
     config.roboport.energy = 100000000
     local roboport_inventory = config.roboport.get_inventory(defines.inventory.roboport_robot)
-    if game.entity_prototypes["bnw-homeworld-construction-robot"] ~= nil then
+    if settings.startup["bnw-homeworld-starting-robots"].value then
        roboport_inventory.insert{name = "bnw-homeworld-construction-robot", count = 100}
     else
        roboport_inventory.insert{name = "construction-robot", count = 100}
     end
-    if game.entity_prototypes["bnw-homeworld-logistic-robot"] ~= nil then
+    if settings.startup["bnw-homeworld-starting-robots"].value then
        roboport_inventory.insert{name = "bnw-homeworld-logistic-robot", count = 50}
     else
        roboport_inventory.insert{name = "logistic-robot", count = 50}
