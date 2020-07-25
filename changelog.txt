@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 3.3.5
+Date: 25. 07. 2020
+  Features:
+    - Add the ability to start with fast robots using the homeworld's technology.  This is controlled by a startup setting and defaults to 'off'.
+---------------------------------------------------------------------------------------------------
 Version: 3.3.3
 Date: 20. 07. 2020
   Bugfixes:
