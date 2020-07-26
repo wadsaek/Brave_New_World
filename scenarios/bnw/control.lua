@@ -499,7 +499,11 @@ script.on_event(defines.events.on_player_changed_position, function(event)
     -- prevent player from exploring, unless in a vehicle
     if not player.vehicle then
         local charted = function(x, y)
-            return player.force.is_chunk_charted(player.surface, {x - 2, y - 2}) and player.force.is_chunk_charted(player.surface, {x - 2, y + 2}) and player.force.is_chunk_charted(player.surface, {x + 2, y - 2}) and player.force.is_chunk_charted(player.surface, {x + 2, y + 2})
+           return player.force.is_chunk_charted(player.surface, {x, y}) and
+              (player.force.is_chunk_charted(player.surface, {x - 2, y - 2}) or not player.surface.is_chunk_generated({x - 2, y - 2})) and
+              (player.force.is_chunk_charted(player.surface, {x - 2, y + 2}) or not player.surface.is_chunk_generated({x - 2, y + 2})) and
+              (player.force.is_chunk_charted(player.surface, {x + 2, y - 2}) or not player.surface.is_chunk_generated({x + 2, y - 2})) and
+              (player.force.is_chunk_charted(player.surface, {x + 2, y + 2}) or not player.surface.is_chunk_generated({x + 2, y + 2}))
         end
         if not charted(math.floor(player.position.x / 32), math.floor(player.position.y / 32)) then
             -- can't move here, chunk not charted
