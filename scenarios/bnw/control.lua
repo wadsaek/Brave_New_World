@@ -137,7 +137,7 @@ function itemCountAllowed(name, count, player)
     elseif item.type == "blueprint" or item.type == "deconstruction-item" or item.type == "blueprint-book" or item.type == "selection-tool" or name == "artillery-targeting-remote" or name == "spidertron-remote" or item.type == "upgrade-item" or item.type == "copy-paste-tool" or item.type == "cut-paste-tool" or name == "tl-adjust-capsule" or name == "tl-draw-capsule" or name == "tl-edit-capsule" then
         -- these only place ghosts or are utility items
         return count
-    elseif place_type == "car" then
+    elseif place_type == "car" or place_type == "spider-vehicle" then
         -- let users put down cars & tanks
         return count
     elseif item.place_as_equipment_result then

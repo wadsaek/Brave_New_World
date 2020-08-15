@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 4.0.1
+Date: 15. 08. 2020
+  Bugfixes:
+    - Allow _both_ Spidertron and Spidertron remote in your inventory. I should test more before releasing. Also note that this will only affect _new_ games because the BNW control.lua scenario file is inside the savegame and not updated from the contents of the mod.
+---------------------------------------------------------------------------------------------------
 Version: 4.0.0
 Date: 15. 08. 2020
   Features:
