@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 4.0.0
+Date: 15. 08. 2020
+  Features:
+    - Add support for the Tapeline mod (https://mods.factorio.com/mod/Tapeline)
+    - Add support for the Spidertron remote. This feature seems almost tailor made for BNW.
+---------------------------------------------------------------------------------------------------
 Version: 3.3.6
 Date: 26. 07. 2020
   Bugfixes:
