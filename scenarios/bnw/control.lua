@@ -406,9 +406,21 @@ script.on_event(defines.events.on_player_created, function(event)
         end
     end
 
+    global.bnw_scenario_version = game.active_mods["brave-new-world"]
     -- setup force
     setupForce(player.force, player.surface, 0, 0, game.active_mods["SeaBlock"])
     preventMining(player)
+end)
+
+script.on_configuration_changed(function(chgdata)
+    local new = game.active_mods["brave-new-world"]
+    if new ~= nil then
+        local old = global.bnw_scenario_version
+        if old ~= new then
+            game.reload_script()
+            global.bnw_scenario_version = new
+        end
+    end
 end)
 
 script.on_event(defines.events.on_player_pipette, function(event)

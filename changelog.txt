@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 4.0.2
+Date: 15. 08. 2020
+  Changes:
+    - Name change back to Brave New World as candidae was kind of enough to give me (Omnifarious) publishing rights for his mod.
+  Features:
+    - New games started with BNW scenario should now update the scenario when a new version of the mod is loaded.
+---------------------------------------------------------------------------------------------------
 Version: 4.0.1
 Date: 15. 08. 2020
   Bugfixes:
