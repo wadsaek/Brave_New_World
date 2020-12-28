@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 4.1.1
+Date: 27. 12. 2020
+  Changes:
+    - Set up correct technology unlocks for newer version of SeaBlock. Also add optional dependency on SeaBlock to make sure unlocks are not applied to incorrect version.
+---------------------------------------------------------------------------------------------------
 Version: 4.1.0
 Date: 27. 12. 2020
   Changes:

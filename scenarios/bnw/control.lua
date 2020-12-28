@@ -182,8 +182,12 @@ function setupForce(force, surface, x, y, seablock_enabled)
     if seablock_enabled then
         force.technologies["sb-startup1"].researched = true
         force.technologies["sb-startup2"].researched = true
-        force.technologies["bio-wood-processing"].researched = true -- what happened to sb-startup3? :o
+        force.technologies["bio-paper-1"].researched = true
+        force.technologies["bio-wood-processing"].researched = true
+        force.technologies["sb-startup3"].researched = true
         force.technologies["sb-startup4"].researched = true
+        force.technologies["sct-lab-t1"].researched = true
+        force.technologies["sct-automation-science-pack"].researched = true
     end
 
     -- setup starting location

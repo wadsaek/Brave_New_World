@@ -1,11 +1,15 @@
 {
   "name": "brave-new-world",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "factorio_version": "1.1",
   "title": "Brave New World",
   "author": "canidae",
   "contact": "eric-factorio@omnifarious.org",
   "homepage": "https://github.com/Omnifarious/Braver_New_World",
   "description": "RTS-like scenario for Factorio. Player character is removed, all work must be done by bots. Minimal 0.18 port of Brave New World by candidae, ported by Sladki, published by Omnifarious.",
-  "dependencies": ["base >= 1.0", "! Braver_New_World"]
+    "dependencies": [
+        "base >= 1.0",
+        "? SeaBlock >= 0.5.1",
+        "! Braver_New_World"
+    ]
 }
