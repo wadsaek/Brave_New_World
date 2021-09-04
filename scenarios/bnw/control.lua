@@ -342,6 +342,7 @@ local function setupForce(force, surface, x, y, seablock_enabled)
     if seablock_enabled then
         -- need some stuff for SeaBlock so we won't get stuck (also slightly accelerate gameplay)
         chest_inventory.insert{name = "offshore-pump", count = 1}
+        chest_inventory.insert{name = "wood-pellets", count = 50}
         chest_inventory = chest2.get_inventory(defines.inventory.chest)
         chest_inventory.insert{name = "angels-electrolyser", count = 4}
         chest_inventory.insert{name = "angels-flare-stack", count = 2}
