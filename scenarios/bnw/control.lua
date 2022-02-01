@@ -63,6 +63,68 @@ local function get_default_qb_slots(seablock_enabled)
     return qb_slots
 end
 
+local function itemCountAllowed(name, count, player)
+    local item = game.item_prototypes[name]
+    local place_type = item.place_result and item.place_result.type
+    if name == "red-wire" or name == "green-wire" then
+        -- need these for circuitry, one stack is enough
+        return math.min(200, count)
+    elseif name == "copper-cable" then
+        -- need this for manually connecting poles, but don't want player to manually move stuff around so we'll limit it
+        return math.min(20, count)
+    elseif item.type == "blueprint" or item.type == "deconstruction-item" or item.type == "blueprint-book" or item.type == "selection-tool" or name == "artillery-targeting-remote" or name == "spidertron-remote" or item.type == "upgrade-item" or item.type == "copy-paste-tool" or item.type == "cut-paste-tool" or name == "tl-adjust-capsule" or name == "tl-draw-capsule" or name == "tl-edit-capsule" then
+        -- these only place ghosts or are utility items
+        return count
+    elseif place_type == "car" or place_type == "spider-vehicle" then
+        -- let users put down cars & tanks
+        return count
+    elseif item.place_as_equipment_result then
+        -- let user carry equipment
+        return count
+    elseif string.match(name, ".*module.*") then
+        -- allow modules
+        return count
+    elseif name == "BlueprintAlignment-blueprint-holder" then
+        -- temporary holding location for original blueprint, should only ever be one of these.
+        return count
+    end
+    return 0
+end
+
+local function dropItems(player, name, count)
+    local entity = player.opened or player.selected
+    local inserted = 0
+    if entity and entity.insert then
+        -- in case picking up items from a limited chest, unset limit, insert, then set limit again
+        for _, inventory_id in pairs(defines.inventory) do
+            local inventory = entity.get_inventory(inventory_id)
+            if inventory then
+                local barpos = inventory.supports_bar() and inventory.get_bar() or nil
+                if inventory.supports_bar() then
+                    inventory.set_bar() -- clear bar (the chest size limiter)
+                end
+                inserted = inserted + inventory.insert{name = name, count = count}
+                count = count - inserted
+                if inventory.supports_bar() then
+                    inventory.set_bar(barpos) -- reset bar
+                end
+                if count <= 0 then
+                    break
+                end
+            end
+        end
+        if count > 0 then
+            -- try a generic insert (although code above should make this redundant)
+            count = count - entity.insert({name = name, count = count})
+        end
+    end
+    if count > 0 then
+        -- now we're forced to spill items
+        entity = entity or global.forces[player.force.name].roboport
+        entity.surface.spill_item_stack(entity.position, {name = name, count = count}, false, entity.force, false)
+    end
+end
+
 local function inventoryChanged(event)
     if global.creative then
         return
@@ -109,68 +171,6 @@ local function inventoryChanged(event)
             player.remove_item{name = name, count = to_remove}
         end
     end
-end
-
-local function dropItems(player, name, count)
-    local entity = player.opened or player.selected
-    local inserted = 0
-    if entity and entity.insert then
-        -- in case picking up items from a limited chest, unset limit, insert, then set limit again
-        for _, inventory_id in pairs(defines.inventory) do
-            local inventory = entity.get_inventory(inventory_id)
-            if inventory then
-                local barpos = inventory.supports_bar() and inventory.get_bar() or nil
-                if inventory.supports_bar() then
-                    inventory.set_bar() -- clear bar (the chest size limiter)
-                end
-                inserted = inserted + inventory.insert{name = name, count = count}
-                count = count - inserted
-                if inventory.supports_bar() then
-                    inventory.set_bar(barpos) -- reset bar
-                end
-                if count <= 0 then
-                    break
-                end
-            end
-        end
-        if count > 0 then
-            -- try a generic insert (although code above should make this redundant)
-            count = count - entity.insert({name = name, count = count})
-        end
-    end
-    if count > 0 then
-        -- now we're forced to spill items
-        entity = entity or global.forces[player.force.name].roboport
-        entity.surface.spill_item_stack(entity.position, {name = name, count = count}, false, entity.force, false)
-    end
-end
-
-local function itemCountAllowed(name, count, player)
-    local item = game.item_prototypes[name]
-    local place_type = item.place_result and item.place_result.type
-    if name == "red-wire" or name == "green-wire" then
-        -- need these for circuitry, one stack is enough
-        return math.min(200, count)
-    elseif name == "copper-cable" then
-        -- need this for manually connecting poles, but don't want player to manually move stuff around so we'll limit it
-        return math.min(20, count)
-    elseif item.type == "blueprint" or item.type == "deconstruction-item" or item.type == "blueprint-book" or item.type == "selection-tool" or name == "artillery-targeting-remote" or name == "spidertron-remote" or item.type == "upgrade-item" or item.type == "copy-paste-tool" or item.type == "cut-paste-tool" or name == "tl-adjust-capsule" or name == "tl-draw-capsule" or name == "tl-edit-capsule" then
-        -- these only place ghosts or are utility items
-        return count
-    elseif place_type == "car" or place_type == "spider-vehicle" then
-        -- let users put down cars & tanks
-        return count
-    elseif item.place_as_equipment_result then
-        -- let user carry equipment
-        return count
-    elseif string.match(name, ".*module.*") then
-        -- allow modules
-        return count
-    elseif name == "BlueprintAlignment-blueprint-holder" then
-        -- temporary holding location for original blueprint, should only ever be one of these.
-        return count
-    end
-    return 0
 end
 
 local function setupForce(force, surface, x, y, seablock_enabled)
