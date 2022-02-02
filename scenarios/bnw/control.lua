@@ -145,6 +145,10 @@ local function inventoryChanged(event)
     -- player is only allowed to carry whitelisted items
     -- everything else goes into entity opened or entity beneath mouse cursor
     local inventory_main = player.get_inventory(defines.inventory.god_main)
+    if inventory_main == nil then
+        return
+    end
+
     local items = {}
     for i = 1, #inventory_main do
         local item_stack = inventory_main[i]
