@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 5.0.0
+Date: 25.10.2025
+  Changes:
+  - Update for factorio 2.0. Note that this only fixes the mod API usage, and might not be a winnable scenario
+---------------------------------------------------------------------------------------------------
 Version: 4.2.0
 Date: 05. 03. 2022
   Changes:

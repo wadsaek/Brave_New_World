@@ -2,9 +2,9 @@ local function get_default_qb_slots(seablock_enabled)
     local qb_slots
     if seablock_enabled then
         qb_slots = {
-                [1]  = game.item_prototypes["basic-transport-belt"] and "basic-transport-belt" or "transport-belt",
-                [2]  = game.item_prototypes["basic-underground-belt"] and "basic-underground-belt" or "underground-belt",
-                [3]  = game.item_prototypes["basic-transport-belt"] and "basic-splitter" or "splitter",
+                [1]  = prototypes.item["basic-transport-belt"] and "basic-transport-belt" or "transport-belt",
+                [2]  = prototypes.item["basic-underground-belt"] and "basic-underground-belt" or "underground-belt",
+                [3]  = prototypes.item["basic-transport-belt"] and "basic-splitter" or "splitter",
                 [4]  = "inserter",
                 [5]  = "assembling-machine-1",
                 [6]  = "small-electric-pole",
@@ -13,10 +13,10 @@ local function get_default_qb_slots(seablock_enabled)
                 [9]  = "offshore-pump",
                 [10] = "small-lamp",
                 [11] = "roboport",
-                [12] = "logistic-chest-storage",
-                [13] = "logistic-chest-requester",
-                [14] = "logistic-chest-passive-provider",
-                [15] = "logistic-chest-buffer",
+                [12] = "storage-chest",
+                [13] = "requester-chest",
+                [14] = "passive-provider-chest",
+                [15] = "buffer-chest",
                 [16] = nil,
                 [17] = nil,
                 [18] = nil,
@@ -32,9 +32,9 @@ local function get_default_qb_slots(seablock_enabled)
         }
     else
         qb_slots = {
-                [1]  = game.item_prototypes["basic-transport-belt"] and "basic-transport-belt" or "transport-belt",
-                [2]  = game.item_prototypes["basic-underground-belt"] and "basic-underground-belt" or "underground-belt",
-                [3]  = game.item_prototypes["basic-transport-belt"] and "basic-splitter" or "splitter",
+                [1]  = prototypes.item["basic-transport-belt"] and "basic-transport-belt" or "transport-belt",
+                [2]  = prototypes.item["basic-underground-belt"] and "basic-underground-belt" or "underground-belt",
+                [3]  = prototypes.item["basic-transport-belt"] and "basic-splitter" or "splitter",
                 [4]  = "inserter",
                 [5]  = "long-handed-inserter",
                 [6]  = "medium-electric-pole",
@@ -43,10 +43,10 @@ local function get_default_qb_slots(seablock_enabled)
                 [9]  = "stone-furnace",
                 [10] = "electric-mining-drill",
                 [11] = "roboport",
-                [12] = "logistic-chest-storage",
-                [13] = "logistic-chest-requester",
-                [14] = "logistic-chest-passive-provider",
-                [15] = "logistic-chest-buffer",
+                [12] = "storage-chest",
+                [13] = "requester-chest",
+                [14] = "passive-provider-chest",
+                [15] = "buffer-chest",
                 [16] = "gun-turret",
                 [17] = "stone-wall",
                 [18] = nil,
@@ -64,7 +64,7 @@ local function get_default_qb_slots(seablock_enabled)
 end
 
 local function itemCountAllowed(name, count, player)
-    local item = game.item_prototypes[name]
+    local item = prototypes.item[name]
     local place_type = item.place_result and item.place_result.type
     if name == "red-wire" or name == "green-wire" then
         -- need these for circuitry, one stack is enough
@@ -120,27 +120,27 @@ local function dropItems(player, name, count)
     end
     if count > 0 then
         -- now we're forced to spill items
-        entity = entity or global.forces[player.force.name].roboport
-        entity.surface.spill_item_stack(entity.position, {name = name, count = count}, false, entity.force, false)
+        entity = entity or storage.forces[player.force.name].roboport
+        entity.surface.spill_item_stack(entity.position, { name = name, count = count }, false, entity.force, false)
     end
 end
 
 local function inventoryChanged(event)
-    if global.creative then
+    if storage.creative then
         return
     end
     local player = game.players[event.player_index]
     -- remove any crafted items (and possibly make ghost cursor of item)
-    for _, item in pairs(global.players[event.player_index].crafted) do
+    for _, item in pairs(storage.players[event.player_index].crafted) do
         if itemCountAllowed(item.name, item.count, player) == 0 then
             if player.clean_cursor() then
                 player.cursor_stack.clear()
             end
         end
-        player.cursor_ghost = game.item_prototypes[item.name]
+        player.cursor_ghost = prototypes.item[item.name]
         player.remove_item(item)
     end
-    global.players[event.player_index].crafted = {}
+    storage.players[event.player_index].crafted = {}
 
     -- player is only allowed to carry whitelisted items
     -- everything else goes into entity opened or entity beneath mouse cursor
@@ -164,7 +164,7 @@ local function inventoryChanged(event)
             end
         end
     end
-    global.players[event.player_index].inventory_items = items
+    storage.players[event.player_index].inventory_items = items
 
     local entity = player.selected or player.opened
     for name, item in pairs(items) do
@@ -172,28 +172,28 @@ local function inventoryChanged(event)
         local to_remove = item.count - allowed
         if to_remove > 0 then
             dropItems(player, name, to_remove)
-            player.remove_item{name = name, count = to_remove}
+            player.remove_item { name = name, count = to_remove }
         end
     end
 end
 
 local function setupForce(force, surface, x, y, seablock_enabled)
-    if not global.forces then
-        global.forces = {}
+    if not storage.forces then
+        storage.forces = {}
     end
-    if global.forces[force.name] then
+    if storage.forces[force.name] then
         -- force already exist
         return
     end
-    global.forces[force.name] = {}
+    storage.forces[force.name] = {}
 
     -- setup event listeners for creative mode
     if remote.interfaces["creative-mode"] then
         script.on_event(remote.call("creative-mode", "on_enabled"), function(event)
-            global.creative = true
+            storage.creative = true
         end)
         script.on_event(remote.call("creative-mode", "on_disabled"), function(event)
-            global.creative = false
+            storage.creative = false
         end)
     end
 
@@ -268,7 +268,7 @@ local function setupForce(force, surface, x, y, seablock_enabled)
     end
 
     -- remove trees/stones/resources
-    local entities = surface.find_entities_filtered{area = {{x - 16, y - 7}, {x + 15, y + 9}}, force = "neutral"}
+    local entities = surface.find_entities_filtered { area = { { x - 16, y - 7 }, { x + 15, y + 9 } }, force = "neutral" }
     for _, entity in pairs(entities) do
         entity.destroy()
     end
@@ -281,52 +281,52 @@ local function setupForce(force, surface, x, y, seablock_enabled)
             if tile.prototype.layer <= 4 then
                 name = water_replace_tile
             end
-            tiles[#tiles + 1] = {name = name, position = {xx, yy}}
+            tiles[#tiles + 1] = { name = name, position = { xx, yy } }
         end
     end
     surface.set_tiles(tiles)
 
     -- place walls
     for xx = x - 3, x + 2 do
-        surface.create_entity{name = "stone-wall", position = {xx, y - 3}, force = force, raise_built = true}
-        surface.create_entity{name = "stone-wall", position = {xx, y + 5}, force = force, raise_built = true}
+        surface.create_entity { name = "stone-wall", position = { xx, y - 3 }, force = force, raise_built = true }
+        surface.create_entity { name = "stone-wall", position = { xx, y + 5 }, force = force, raise_built = true }
     end
     for yy = y - 3, y + 5 do
-        surface.create_entity{name = "stone-wall", position = {x - 3, yy}, force = force, raise_built = true}
-        surface.create_entity{name = "stone-wall", position = {x + 2, yy}, force = force, raise_built = true}
+        surface.create_entity { name = "stone-wall", position = { x - 3, yy }, force = force, raise_built = true }
+        surface.create_entity { name = "stone-wall", position = { x + 2, yy }, force = force, raise_built = true }
     end
     -- roboport
-    local config = global.forces[force.name]
-    config.roboport = surface.create_entity{name = "roboport", position = {x, y}, force = force, raise_built = true}
+    local config = storage.forces[force.name]
+    config.roboport = surface.create_entity { name = "roboport", position = { x, y }, force = force, raise_built = true }
     config.roboport.minable = false
     config.roboport.energy = 100000000
     local roboport_inventory = config.roboport.get_inventory(defines.inventory.roboport_robot)
     if settings.startup["bnw-homeworld-starting-robots"].value then
-       roboport_inventory.insert{name = "bnw-homeworld-construction-robot", count = 100}
+        roboport_inventory.insert { name = "bnw-homeworld-construction-robot", count = 100 }
     else
-       roboport_inventory.insert{name = "construction-robot", count = 100}
+        roboport_inventory.insert { name = "construction-robot", count = 100 }
     end
     if settings.startup["bnw-homeworld-starting-robots"].value then
-       roboport_inventory.insert{name = "bnw-homeworld-logistic-robot", count = 50}
+        roboport_inventory.insert { name = "bnw-homeworld-logistic-robot", count = 50 }
     else
-       roboport_inventory.insert{name = "logistic-robot", count = 50}
+        roboport_inventory.insert { name = "logistic-robot", count = 50 }
     end
 
     roboport_inventory = config.roboport.get_inventory(defines.inventory.roboport_material)
-    roboport_inventory.insert{name = "repair-pack", count = 10}
+    roboport_inventory.insert { name = "repair-pack", count = 10 }
     -- electric pole
-    local electric_pole = surface.create_entity{name = "medium-electric-pole", position = {x + 1, y + 2}, force = force, raise_built = true}
+    local electric_pole = surface.create_entity { name = "medium-electric-pole", position = { x + 1, y + 2 }, force = force, raise_built = true }
     -- radar
-    surface.create_entity{name = "radar", position = {x - 1, y + 3}, force = force, raise_built = true}
+    surface.create_entity { name = "radar", position = { x - 1, y + 3 }, force = force, raise_built = true }
     -- storage chest, contains the items the force starts with
-    local chest1 = surface.create_entity{name = "logistic-chest-storage", position = {x + 1, y + 3}, force = force, raise_built = true}
-    local chest2 = surface.create_entity{name = "logistic-chest-storage", position = {x + 1, y + 4}, force = force, raise_built = true}
+    local chest1 = surface.create_entity { name = "storage-chest", position = { x + 1, y + 3 }, force = force, raise_built = true }
+    local chest2 = surface.create_entity { name = "storage-chest", position = { x + 1, y + 4 }, force = force, raise_built = true }
     local chest_inventory = chest1.get_inventory(defines.inventory.chest)
 
-    if game.item_prototypes["basic-transport-belt"] then
-        chest_inventory.insert{name = "basic-transport-belt", count = 400}
-        chest_inventory.insert{name = "basic-underground-belt", count = 20}
-        chest_inventory.insert{name = "basic-splitter", count = 10}
+    if prototypes.item["basic-transport-belt"] then
+        chest_inventory.insert { name = "basic-transport-belt", count = 400 }
+        chest_inventory.insert { name = "basic-underground-belt", count = 20 }
+        chest_inventory.insert { name = "basic-splitter", count = 10 }
     else
         chest_inventory.insert{name = "transport-belt", count = 400}
         chest_inventory.insert{name = "underground-belt", count = 20}
@@ -337,11 +337,11 @@ local function setupForce(force, surface, x, y, seablock_enabled)
     chest_inventory.insert{name = "offshore-pump", count = 1}
     chest_inventory.insert{name = "assembling-machine-1", count = 4}
     chest_inventory.insert{name = "roboport", count = 4}
-    chest_inventory.insert{name = "logistic-chest-storage", count = 2}
-    chest_inventory.insert{name = "logistic-chest-passive-provider", count = 4}
-    chest_inventory.insert{name = "logistic-chest-requester", count = 4}
-    chest_inventory.insert{name = "logistic-chest-buffer", count = 4}
-    chest_inventory.insert{name = "logistic-chest-active-provider", count = 4}
+    chest_inventory.insert{name = "storage-chest", count = 2}
+    chest_inventory.insert{name = "passive-provider-chest", count = 4}
+    chest_inventory.insert{name = "requester-chest", count = 4}
+    chest_inventory.insert{name = "buffer-chest", count = 4}
+    chest_inventory.insert{name = "active-provider-chest", count = 4}
     chest_inventory.insert{name = "lab", count = 2}
     if seablock_enabled then
         -- need some stuff for SeaBlock so we won't get stuck (also slightly accelerate gameplay)
@@ -426,11 +426,11 @@ local function preventMining(player)
 end
 
 script.on_event(defines.events.on_player_created, function(event)
-    if not global.players then
-        global.players = {}
+    if not storage.players then
+        storage.players = {}
     end
     local player = game.players[event.player_index]
-    global.players[event.player_index] = {
+    storage.players[event.player_index] = {
         crafted = {},
         inventory_items = {},
         previous_position = player.position
@@ -445,7 +445,7 @@ script.on_event(defines.events.on_player_created, function(event)
     -- enable cheat mode
     player.cheat_mode = true
 
-    local seablock_enabled = game.active_mods["SeaBlock"] and true or false
+    local seablock_enabled = script.active_mods["SeaBlock"] and true or false
 
     local default_qb_slots = get_default_qb_slots(seablock_enabled)
 
@@ -458,25 +458,25 @@ script.on_event(defines.events.on_player_created, function(event)
         end
     end
 
-    global.bnw_scenario_version = game.active_mods["brave-new-world"]
+    storage.bnw_scenario_version = script.active_mods["brave-new-world"]
     -- setup force
     setupForce(player.force, player.surface, 0, 0, seablock_enabled)
     preventMining(player)
 end)
 
 script.on_configuration_changed(function(chgdata)
-    local new = game.active_mods["brave-new-world"]
+    local new = script.active_mods["brave-new-world"]
     if new ~= nil then
-        local old = global.bnw_scenario_version
+        local old = storage.bnw_scenario_version
         if old ~= new then
             game.reload_script()
-            global.bnw_scenario_version = new
+            storage.bnw_scenario_version = new
         end
     end
 end)
 
 script.on_event(defines.events.on_player_pipette, function(event)
-    if global.creative then
+    if storage.creative then
         return
     end
     game.players[event.player_index].cursor_stack.clear()
@@ -484,7 +484,7 @@ script.on_event(defines.events.on_player_pipette, function(event)
 end)
 
 script.on_event(defines.events.on_player_crafted_item, function(event)
-    if global.creative then
+    if storage.creative then
         return
     end
     game.players[event.player_index].cursor_ghost = event.item_stack.prototype
@@ -494,7 +494,7 @@ end)
 script.on_event(defines.events.on_player_main_inventory_changed, inventoryChanged)
 
 script.on_event(defines.events.on_player_cursor_stack_changed, function(event)
-    if global.creative then
+    if storage.creative then
         return
     end
     local player = game.players[event.player_index]
@@ -538,26 +538,26 @@ script.on_event(defines.events.on_player_cursor_stack_changed, function(event)
 end)
 
 script.on_event(defines.events.on_entity_died, function(event)
-    if global.creative then
+    if storage.creative then
         return
     end
     local entity = event.entity
     -- check if roboport was destroyed
-    local config = global.forces[entity.force.name]
+    local config = storage.forces[entity.force.name]
     if config and entity == config.roboport then
-        game.set_game_state{game_finished = true, player_won = false, can_continue = false}
+        game.set_game_state { game_finished = true, player_won = false, can_continue = false }
     end
 end)
 
 script.on_event(defines.events.on_player_changed_position, function(event)
-    if global.creative then
+    if storage.creative then
         return
     end
     local player = game.players[event.player_index]
     -- TODO: really shouldn't have to do this so often (can we do it in migrate function?)
     preventMining(player)
 
-    local config = global.forces[player.force.name]
+    local config = storage.forces[player.force.name]
     local x_chunk = math.floor(player.position.x / 32)
     local y_chunk = math.floor(player.position.y / 32)
     -- prevent player from exploring, unless in a vehicle
@@ -571,7 +571,7 @@ script.on_event(defines.events.on_player_changed_position, function(event)
         end
         if not charted(math.floor(player.position.x / 32), math.floor(player.position.y / 32)) then
             -- can't move here, chunk not charted
-            local prev_pos = global.players[event.player_index].previous_position
+            local prev_pos = storage.players[event.player_index].previous_position
             if charted(math.floor(player.position.x / 32), math.floor(prev_pos.y / 32)) then
                 -- we can move here, though
                 prev_pos.x = player.position.x
@@ -584,5 +584,5 @@ script.on_event(defines.events.on_player_changed_position, function(event)
         end
     end
     -- save new player position
-    global.players[event.player_index].previous_position = player.position
+    storage.players[event.player_index].previous_position = player.position
 end)
